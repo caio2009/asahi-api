@@ -7,7 +7,7 @@ const schema = yup.object().shape({
   name: yup.string().required(),
   ruralPropertyId: yup.string().uuid().required(),
   cultivationId: yup.string().uuid().required()
-})
+});
 
 async function validateField(field: Field) {
   try {

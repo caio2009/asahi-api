@@ -5,8 +5,8 @@ import { AppValidationError } from '@shared/errors/AppValidationError';
 
 const schema = yup.object().shape({
   name: yup.string().required(),
-  imageUrl: yup.string().url()
-})
+  image: yup.string()
+});
 
 async function validateCultivation(cultivation: Cultivation) {
   try {

@@ -8,8 +8,8 @@ class Cultivation {
   @Column()
   name: string;
   
-  @Column({ name: 'image_url' })
-  imageUrl: string;
+  @Column({ name: 'image' })
+  image: string;
 }
 
 export default Cultivation;

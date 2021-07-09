@@ -9,7 +9,7 @@ const schema = yup.object().shape({
   fieldId: yup.string().uuid().required(),
   classificationId: yup.string().uuid().required(),
   unitId: yup.string().uuid().required()
-})
+});
 
 async function validateHarvest(harvest: Harvest) {
   try {

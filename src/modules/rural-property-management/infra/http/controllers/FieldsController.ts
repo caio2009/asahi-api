@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 import { container, inject, injectable } from 'tsyringe';
 import IFieldsRepository from '@modules/rural-property-management/repositories/IFieldsRepository';
 import validateField from '@modules/rural-property-management/validations/validateField';
-import CreateFieldService from '@modules/rural-property-management/services/CreateFieldService';
-import UpdateFieldService from '@modules/rural-property-management/services/UpdateFieldService';
+import CreateFieldService from '@modules/rural-property-management/services/field/CreateFieldService';
+import UpdateFieldService from '@modules/rural-property-management/services/field/UpdateFieldService';
 
 @injectable()
 class FieldsController {

@@ -11,7 +11,9 @@ class CultivationsRepository implements ICultivationsRepository {
   }
 
   async findAll(): Promise<Cultivation[]> {
-    return await this.repository.find();
+    return await this.repository.find({
+      order: { name: 'ASC' }
+    });
   }
 
   async findById(id: string): Promise<Cultivation | undefined> {
@@ -31,6 +33,11 @@ class CultivationsRepository implements ICultivationsRepository {
     } catch (err) {
       throw new AppError(400, 'Bad Request');
     }
+  }
+
+  async findByName(name: string): Promise<Cultivation | undefined> {
+    const result = await this.repository.findOne({ name })
+    return result;
   }
 
   async save(data: Cultivation): Promise<Cultivation> {

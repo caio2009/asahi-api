@@ -6,7 +6,7 @@ import { AppValidationError } from '@shared/errors/AppValidationError';
 const schema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string()
-})
+});
 
 async function validateRuralProperty(ruralProperty: RuralProperty) {
   try {

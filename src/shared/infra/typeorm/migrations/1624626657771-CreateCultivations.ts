@@ -19,7 +19,7 @@ export class CreateCultivations1624626657771 implements MigrationInterface {
                     isUnique: true
                 },
                 {
-                    name: 'image_url',
+                    name: 'image',
                     type: 'varchar',
                     isUnique: true,
                     isNullable: true

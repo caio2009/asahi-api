@@ -11,7 +11,9 @@ class RuralPropertiesRepository implements IRuralPropertiesRepository {
   }
 
   async findAll(): Promise<RuralProperty[]> {
-    return await this.repository.find();
+    return await this.repository.find({
+      order: { name: 'ASC' }
+    });
   }
 
   async findById(id: string): Promise<RuralProperty | undefined> {

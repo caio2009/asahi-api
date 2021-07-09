@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 import { container, inject, injectable } from 'tsyringe';
 import IHarvestsRepository from '@modules/rural-property-management/repositories/IHarvestsRepository';
 import validateHarvest from '@modules/rural-property-management/validations/validateHarvest';
-import CreateHarvestService from '@modules/rural-property-management/services/CreateHarvestService';
-import UpdateHarvestService from '@modules/rural-property-management/services/UpdateHarvestService';
+import CreateHarvestService from '@modules/rural-property-management/services/harvest/CreateHarvestService';
+import UpdateHarvestService from '@modules/rural-property-management/services/harvest/UpdateHarvestService';
 
 @injectable()
 class HarvestsController {

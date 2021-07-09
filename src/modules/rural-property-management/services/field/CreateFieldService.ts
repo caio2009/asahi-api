@@ -2,10 +2,10 @@ import Field from '@modules/rural-property-management/infra/typeorm/entities/Fie
 import IFieldsRepository from '@modules/rural-property-management/repositories/IFieldsRepository';
 import IRuralPropertiesRepository from '@modules/rural-property-management/repositories/IRuralPropertiesRepository';
 import { inject, injectable } from 'tsyringe';
-import ICultivationsRepository from '../repositories/ICultivationsRepository';
+import ICultivationsRepository from '../../repositories/ICultivationsRepository';
 
 @injectable()
-class UpdateFieldService {
+class CreateFieldService {
   constructor(
     @inject('FieldsRepository')
     private fieldsRepository: IFieldsRepository,
@@ -24,4 +24,4 @@ class UpdateFieldService {
   }
 }
 
-export default UpdateFieldService;
+export default CreateFieldService;
