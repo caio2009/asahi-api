@@ -58,6 +58,15 @@ class HarvestsRepository implements IHarvestsRepository {
     }
   }
 
+  async findByField(fieldId: string): Promise<IHarvestMappedByDateDTO[]> {
+    const rows = await getConnection().manager.query(harvestsQueries.findByField);
+    const aggregate: IHarvestMappedByDateDTO[] = [];
+    rows.forEach((row: any) => {
+      aggregate.push({ date: row.date, harvests: row.harvests });
+    });
+    return aggregate;
+  }
+
   async save(data: Harvest): Promise<Harvest> {
     return await this.repository.save(data);
   }

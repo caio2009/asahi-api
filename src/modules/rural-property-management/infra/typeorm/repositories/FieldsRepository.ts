@@ -55,7 +55,8 @@ class FieldsRepository implements IFieldsRepository {
   async findByRuralProperty(ruralPropertyId: string): Promise<Field[]> {
     return await this.repository.find({
       where: { ruralPropertyId },
-      relations: ['ruralProperty', 'cultivation']
+      relations: ['ruralProperty', 'cultivation'],
+      order: { name: 'ASC' }
     });
   }
 

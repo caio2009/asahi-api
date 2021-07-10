@@ -70,3 +70,41 @@ INNER JOIN classifications classification ON classification.id = harvest.classif
 INNER JOIN units unit ON unit.id = harvest.unit_id
 GROUP BY TO_CHAR(harvest.date, 'DD/MM/YYYY');
 `;
+
+export const findByField = `
+SELECT
+TO_CHAR(harvest.date, 'DD/MM/YYYY') date,
+JSON_AGG(json_build_object(
+	'id', harvest.id,
+	'quantity', harvest.quantity,
+	'inStock', harvest.in_stock,
+  	'ruralProperty', json_build_object(
+    	'id', rural_property.id,
+      	'name', rural_property.name
+    ),
+  	'field', json_build_object(
+   		'id', field.id,
+      	'name', field.name
+    ),
+  	'cultivation', json_build_object(
+    	'id', cultivation.id,
+      	'name', cultivation.name
+    ),
+  	'classification', json_build_object(
+    	'id', classification.id,
+      	'name', classification.name
+    ),
+  	'unit', json_build_object(
+    	'id', unit.id,
+      	'abbreviation', unit.abbreviation
+    )
+)) harvests
+FROM harvests harvest
+INNER JOIN rural_properties rural_property ON rural_property.id = harvest.rural_property_id
+INNER JOIN fields field ON field.id = harvest.field_id
+INNER JOIN cultivations cultivation ON cultivation.id = harvest.cultivation_id
+INNER JOIN classifications classification ON classification.id = harvest.classification_id
+INNER JOIN units unit ON unit.id = harvest.unit_id
+WHERE field.id = $1
+GROUP BY TO_CHAR(harvest.date, 'DD/MM/YYYY');
+`;
