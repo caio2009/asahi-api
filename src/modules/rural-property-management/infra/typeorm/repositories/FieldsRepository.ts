@@ -31,25 +31,15 @@ class FieldsRepository implements IFieldsRepository {
   }
 
   async findById(id: string): Promise<Field | undefined> {
-    try {
-      return await this.repository.findOne(id);
-    } catch (err) {
-      console.log(err);
-      throw new AppError(400, 'Bad Request!');
-    }
+    return await this.repository.findOne(id);
   }
 
   async findByIdOrFail(id: string): Promise<Field> {
-    try {
-      const result = await this.repository.findOne(id, {
-        relations: ['ruralProperty', 'cultivation']
-      });
-      if (!result) throw new AppError(404, 'Field not found!');
-      return result;
-    } catch (err) {
-      console.log(err);
-      throw new AppError(400, 'Bad Request!');
-    }
+    const result = await this.repository.findOne(id, {
+      relations: ['ruralProperty', 'cultivation']
+    });
+    if (!result) throw new AppError(404, 'Field not found!');
+    return result;
   }
 
   async findByRuralProperty(ruralPropertyId: string): Promise<Field[]> {

@@ -17,23 +17,13 @@ class ClassificationsRepository implements IClassificationsRepository {
   }
 
   async findById(id: string): Promise<Classification | undefined> {
-    try {
-      return await this.repository.findOne(id);
-    } catch (err) {
-      console.log(err);
-      throw new AppError(400, 'Bad Request!');
-    }
+    return await this.repository.findOne(id);
   }
 
   async findByIdOrFail(id: string): Promise<Classification> {
-    try {
-      const result = await this.repository.findOne(id);
-      if (!result) throw new AppError(404, 'Classification not found!');
-      return result;
-    } catch (err) {
-      console.log(err);
-      throw new AppError(400, 'Bad Request!');
-    }
+    const result = await this.repository.findOne(id);
+    if (!result) throw new AppError(404, 'Classification not found!');
+    return result;
   }
 
   async save(data: Classification): Promise<Classification> {

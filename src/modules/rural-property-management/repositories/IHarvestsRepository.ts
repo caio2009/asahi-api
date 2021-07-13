@@ -1,5 +1,5 @@
 import Harvest from "@modules/rural-property-management/infra/typeorm/entities/Harvest";
-import IHarvestsMappedByDateDTO from "@modules/rural-property-management/dtos/IHarvestMappedByDateDTO";
+import IHarvestsMappedByDateDTO from "@modules/rural-property-management/dtos/IHarvestsMappedByDateDTO";
 
 interface IHarvestsRepository {
   findAll(): Promise<Harvest[]>;

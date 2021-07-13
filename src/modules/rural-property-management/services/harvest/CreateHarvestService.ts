@@ -26,6 +26,8 @@ class CreateHarvestService {
     await this.unitsRepository.findByIdOrFail(data.unitId);
     const field = await this.fieldsRepository.findByIdOrFail(data.fieldId);
 
+    if (!data.date) data.date = new Date();
+
     data.ruralPropertyId = field.ruralProperty.id;
     data.cultivationId = field.cultivation.id;
     data.inStock = data.quantity;

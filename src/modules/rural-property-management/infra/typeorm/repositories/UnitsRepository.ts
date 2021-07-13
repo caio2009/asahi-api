@@ -17,23 +17,13 @@ class UnitsRepository implements IUnitsRepository {
   }
 
   async findById(id: string): Promise<Unit | undefined> {
-    try {
-      return await this.repository.findOne(id);
-    } catch (err) {
-      console.log(err);
-      throw new AppError(400, 'Bad Request!');
-    }
+    return await this.repository.findOne(id);
   }
 
   async findByIdOrFail(id: string): Promise<Unit> {
-    try {
-      const result = await this.repository.findOne(id);
-      if (!result) throw new AppError(404, 'Unit not found!');
-      return result;
-    } catch (err) {
-      console.log(err);
-      throw new AppError(400, 'Bad Request!');
-    }
+    const result = await this.repository.findOne(id);
+    if (!result) throw new AppError(404, 'Unit not found!');
+    return result;
   }
 
   async save(data: Unit): Promise<Unit> {

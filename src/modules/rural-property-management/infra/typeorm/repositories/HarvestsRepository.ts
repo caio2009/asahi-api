@@ -1,4 +1,4 @@
-import IHarvestMappedByDateDTO from "@modules/rural-property-management/dtos/IHarvestMappedByDateDTO";
+import IHarvestsMappedByDateDTO from "@modules/rural-property-management/dtos/IHarvestsMappedByDateDTO";
 import IHarvestsRepository from "@modules/rural-property-management/repositories/IHarvestsRepository";
 import AppError from "@shared/errors/AppError";
 import { getConnection, getRepository, MoreThan, Repository } from "typeorm";
@@ -19,9 +19,9 @@ class HarvestsRepository implements IHarvestsRepository {
     });
   }
 
-  async findAllMappedByDate(): Promise<IHarvestMappedByDateDTO[]> {
+  async findAllMappedByDate(): Promise<IHarvestsMappedByDateDTO[]> {
     const rows = await getConnection().manager.query(harvestsQueries.findAllMappedByDate);
-    const aggregate: IHarvestMappedByDateDTO[] = [];
+    const aggregate: IHarvestsMappedByDateDTO[] = [];
     rows.forEach((row: any) => {
       aggregate.push({ date: row.date, harvests: row.harvests });
     });
@@ -37,30 +37,20 @@ class HarvestsRepository implements IHarvestsRepository {
   }
 
   async findById(id: string): Promise<Harvest | undefined> {
-    try {
-      return await this.repository.findOne(id);
-    } catch (err) {
-      console.log(err);
-      throw new AppError(400, 'Bad Request!');
-    }
+    return await this.repository.findOne(id);
   }
 
   async findByIdOrFail(id: string): Promise<Harvest> {
-    try {
-      const result = await this.repository.findOne(id, {
-        relations: ['ruralProperty', 'field', 'cultivation', 'classification', 'unit']
-      });
-      if (!result) throw new AppError(404, 'Harvest not found!');
-      return result;
-    } catch (err) {
-      console.log(err);
-      throw new AppError(400, 'Bad Request!');
-    }
+    const result = await this.repository.findOne(id, {
+      relations: ['ruralProperty', 'field', 'cultivation', 'classification', 'unit']
+    });
+    if (!result) throw new AppError(404, 'Harvest not found!');
+    return result;
   }
 
-  async findByField(fieldId: string): Promise<IHarvestMappedByDateDTO[]> {
-    const rows = await getConnection().manager.query(harvestsQueries.findByField);
-    const aggregate: IHarvestMappedByDateDTO[] = [];
+  async findByField(fieldId: string): Promise<IHarvestsMappedByDateDTO[]> {
+    const rows = await getConnection().manager.query(harvestsQueries.findByField, [fieldId]);
+    const aggregate: IHarvestsMappedByDateDTO[] = [];
     rows.forEach((row: any) => {
       aggregate.push({ date: row.date, harvests: row.harvests });
     });
