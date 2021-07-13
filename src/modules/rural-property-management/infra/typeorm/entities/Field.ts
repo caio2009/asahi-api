@@ -5,7 +5,7 @@ import Cultivation from '@modules/rural-property-management/infra/typeorm/entiti
 @Entity('fields')
 class Field {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @Column()
   name: string;

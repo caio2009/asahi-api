@@ -1,50 +1,56 @@
-import Classification from '@modules/rural-property-management/infra/typeorm/entities/Classification';
+import CreateClassificationService from "@modules/rural-property-management/services/classifications/CreateClassificationService";
+import DeleteClassificationService from "@modules/rural-property-management/services/classifications/DeleteClassificationService";
+import FindAllClassificationsService from "@modules/rural-property-management/services/classifications/FindAllClassificationsService";
+import FindClassificationByIdService from "@modules/rural-property-management/services/classifications/FindClassificationByIdService";
+import UpdateClassificationService from "@modules/rural-property-management/services/classifications/UpdateClassificationService";
 import { Request, Response } from "express";
-import { inject, injectable } from 'tsyringe';
-import IClassificationsRepository from '@modules/rural-property-management/repositories/IClassificationsRepository';
-import validateClassification from '@modules/rural-property-management/validations/validateClassification';
+import { container } from "tsyringe";
 
-@injectable()
 class ClassificationsController {
-  constructor(
-    @inject('ClassificationsRepository')
-    private repository: IClassificationsRepository
-  ) { }
+  constructor() { }
 
   async index(req: Request, res: Response) {
-    const result = await this.repository.findAll();
-    return res.json(result);
+    const findAll = container.resolve(FindAllClassificationsService);
+    const classifications = await findAll.execute();
+
+    return res.json(classifications);
   }
 
   async show(req: Request, res: Response) {
     const { id } = req.params;
-    const result = await this.repository.findByIdOrFail(id);
-    return res.json(result);
+
+    const findById = container.resolve(FindClassificationByIdService);
+    const classification = await findById.execute(id);
+
+    return res.json(classification);
   }
 
   async create(req: Request, res: Response) {
     const { name } = req.body;
-    const classification = new Classification();
-    Object.assign(classification, { name });
-    await validateClassification(classification);
-    const result = await this.repository.save(classification);
-    res.location(`http://localhost:3333/classifications/${result.id}`);
+
+    const createClassification = container.resolve(CreateClassificationService);
+    const classification = await createClassification.execute({ name });
+
+    res.location(`${process.env.API_URL}/classifications/${classification.id}`);
     return res.status(201).send();
   }
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const classification = await this.repository.findByIdOrFail(id);
     const { name } = req.body;
-    Object.assign(classification, { name });
-    await this.repository.save(classification);
+
+    const updateClassification = container.resolve(UpdateClassificationService);
+    await updateClassification.execute({ id, name });
+
     return res.status(204).send();
   }
 
   async delete(req: Request, res: Response) {
     const { id } = req.params;
-    await this.repository.findByIdOrFail(id);
-    await this.repository.delete(id);
+
+    const deleteClassification = container.resolve(DeleteClassificationService);
+    await deleteClassification.execute(id);
+
     return res.status(204).send();
   }
 }

@@ -8,7 +8,7 @@ import Unit from './Unit';
 @Entity('harvests')
 class Harvest {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @Column()
   date: Date;
