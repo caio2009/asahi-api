@@ -18,6 +18,9 @@ import UnitsRepository from '@modules/rural-property-management/infra/typeorm/re
 import IHarvestsRepository from '@modules/rural-property-management/repositories/IHarvestsRepository';
 import HarvestsRepository from '@modules/rural-property-management/infra/typeorm/repositories/HarvestsRepository';
 
+import IClientsRepository from '@modules/ceasa/repositories/IClientsRepository';
+import ClientsRepository from '@modules/ceasa/infra/typeorm/repositories/ClientsRepository';
+
 function repositoriesDI() {
   container.registerSingleton<IRuralPropertiesRepository>(
     'RuralPropertiesRepository', RuralPropertiesRepository
@@ -36,6 +39,9 @@ function repositoriesDI() {
   );
   container.registerSingleton<IHarvestsRepository>(
     'HarvestsRepository', HarvestsRepository
+  );
+  container.registerSingleton<IClientsRepository>(
+    'ClientsRepository', ClientsRepository
   )
 }
 
