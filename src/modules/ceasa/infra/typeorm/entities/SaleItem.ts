@@ -2,7 +2,7 @@ import Harvest from "@modules/rural-property-management/infra/typeorm/entities/H
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import Sale from "./Sale";
 
-@Entity('sales')
+@Entity('sale_items')
 class SaleItem {
   @PrimaryGeneratedColumn('uuid')
   id: string;

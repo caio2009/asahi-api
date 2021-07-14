@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { container } from 'tsyringe';
-import ClientsController from '../controllers/ClientsController';
+import SalesController from '../controllers/SalesController';
 
-function ClientsRouter() {
-  const controller = container.resolve(ClientsController);
+function SalesRouter() {
+  const controller = container.resolve(SalesController);
   const router = Router();
 
   router.get('/', controller.index.bind(controller));
@@ -15,4 +15,4 @@ function ClientsRouter() {
   return router;
 }
 
-export default ClientsRouter;
+export default SalesRouter;

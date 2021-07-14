@@ -68,7 +68,7 @@ INNER JOIN fields field ON field.id = harvest.field_id
 INNER JOIN cultivations cultivation ON cultivation.id = harvest.cultivation_id
 INNER JOIN classifications classification ON classification.id = harvest.classification_id
 INNER JOIN units unit ON unit.id = harvest.unit_id
-GROUP BY date;
+GROUP BY date
 `;
 
 export const findByField = `
@@ -106,5 +106,5 @@ INNER JOIN cultivations cultivation ON cultivation.id = harvest.cultivation_id
 INNER JOIN classifications classification ON classification.id = harvest.classification_id
 INNER JOIN units unit ON unit.id = harvest.unit_id
 WHERE field.id = $1
-GROUP BY date;
+GROUP BY date
 `;

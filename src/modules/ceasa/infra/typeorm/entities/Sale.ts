@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import Client from "./Client";
+import SaleItem from "./SaleItem";
 
 @Entity('sales')
 class Sale {
@@ -7,7 +8,7 @@ class Sale {
   id: string;
 
   @Column()
-  number: number;
+  number?: number;
 
   @Column()
   date: Date;
@@ -30,6 +31,9 @@ class Sale {
   @ManyToOne(type => Client)
   @JoinColumn({ name: 'client_id' })
   client: Client;
+
+  @OneToMany(type => SaleItem, saleItem => saleItem.sale)
+  saleItems: SaleItem[];
 }
 
 export default Sale;
