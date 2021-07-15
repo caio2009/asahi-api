@@ -17,7 +17,7 @@ class FieldHarvestsController {
     const { id } = req.params;
 
     await this.fieldsRepository.findByIdOrFail(id);
-    const result = this.harvestsRepository.findByField(id);
+    const result = await this.harvestsRepository.findByField(id);
 
     return res.json(result);
   }

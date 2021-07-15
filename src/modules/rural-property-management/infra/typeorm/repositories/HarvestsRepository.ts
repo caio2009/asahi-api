@@ -1,4 +1,4 @@
-import IHarvestMappedByDateDTO from "@modules/rural-property-management/dtos/IHarvestMappedByDateDTO";
+import IHarvestsMappedByDateDTO from "@modules/rural-property-management/dtos/IHarvestsMappedByDateDTO";
 import IHarvestsRepository from "@modules/rural-property-management/repositories/IHarvestsRepository";
 import AppError from "@shared/errors/AppError";
 import { getConnection, getRepository, MoreThan, Repository } from "typeorm";
@@ -19,9 +19,9 @@ class HarvestsRepository implements IHarvestsRepository {
     });
   }
 
-  async findAllMappedByDate(): Promise<IHarvestMappedByDateDTO[]> {
+  async findAllMappedByDate(): Promise<IHarvestsMappedByDateDTO[]> {
     const rows = await getConnection().manager.query(harvestsQueries.findAllMappedByDate);
-    const aggregate: IHarvestMappedByDateDTO[] = [];
+    const aggregate: IHarvestsMappedByDateDTO[] = [];
     rows.forEach((row: any) => {
       aggregate.push({ date: row.date, harvests: row.harvests });
     });
@@ -48,9 +48,9 @@ class HarvestsRepository implements IHarvestsRepository {
     return result;
   }
 
-  async findByField(fieldId: string): Promise<IHarvestMappedByDateDTO[]> {
-    const rows = await getConnection().manager.query(harvestsQueries.findByField);
-    const aggregate: IHarvestMappedByDateDTO[] = [];
+  async findByField(fieldId: string): Promise<IHarvestsMappedByDateDTO[]> {
+    const rows = await getConnection().manager.query(harvestsQueries.findByField, [fieldId]);
+    const aggregate: IHarvestsMappedByDateDTO[] = [];
     rows.forEach((row: any) => {
       aggregate.push({ date: row.date, harvests: row.harvests });
     });
