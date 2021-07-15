@@ -5,8 +5,16 @@ import IFieldsRepository from '@modules/rural-property-management/repositories/I
 import Harvest from '@modules/rural-property-management/infra/typeorm/entities/Harvest';
 import { inject, injectable } from 'tsyringe';
 
+interface ICreateHarvestData {
+  date: Date;
+  quantity: number;
+  fieldId: string;
+  classificationId: string;
+  unitId: string;
+}
+
 @injectable()
-class UpdateHarvestService {
+class CreateHarvestService {
   constructor(
     @inject('HarvestsRepository')
     private harvestsRepository: IHarvestsRepository,
@@ -21,28 +29,23 @@ class UpdateHarvestService {
     private unitsRepository: IUnitsRepository
   ) { }
 
-  async execute(before: Harvest, data: Partial<Harvest>): Promise<Harvest> {
-    const { date, quantity, fieldId, classificationId, unitId } = data;
+  async execute(data: ICreateHarvestData): Promise<Harvest> {
+    const obj = new Harvest();
 
-    await this.classificationsRepository.findByIdOrFail(classificationId);
-    await this.unitsRepository.findByIdOrFail(unitId);
-    const field = await this.fieldsRepository.findByIdOrFail(fieldId);
+    obj.date = data.date || undefined;
+    obj.quantity = data.quantity;
+    obj.inStock = data.quantity;
 
-    const { ruralPropertyId, cultivationId } = field;
+    const field = await this.fieldsRepository.findByIdOrFail(data.fieldId);
 
-    Object.assign(before, {
-      date,
-      quantity,
-      inStock: before.inStock + (data.quantity - before.quantity),
-      ruralPropertyId,
-      fieldId,
-      cultivationId,
-      classificationId,
-      unitId
-    } as Harvest);
+    obj.field = field;
+    obj.ruralProperty = field.ruralProperty;
+    obj.cultivation = field.cultivation;
+    obj.classification = await this.classificationsRepository.findByIdOrFail(data.classificationId);
+    obj.unit = await this.unitsRepository.findByIdOrFail(data.unitId);
 
-    return await this.harvestsRepository.save(before);
+    return await this.harvestsRepository.save(obj);
   }
 }
 
-export default UpdateHarvestService;
+export default CreateHarvestService;

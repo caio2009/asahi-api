@@ -7,8 +7,6 @@ import { Request, Response } from "express";
 import { container } from "tsyringe";
 
 class ClassificationsController {
-  constructor() { }
-
   async index(req: Request, res: Response) {
     const findAll = container.resolve(FindAllClassificationsService);
     const classifications = await findAll.execute();

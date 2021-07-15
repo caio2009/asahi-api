@@ -1,50 +1,54 @@
-import RuralProperty from '@modules/rural-property-management/infra/typeorm/entities/RuralProperty';
+import CreateRuralPropertyService from "@modules/rural-property-management/services/ruralProperties/CreateRuralPropertyService";
+import DeleteRuralPropertyService from "@modules/rural-property-management/services/ruralProperties/DeleteRuralPropertyService";
+import FindAllRuralPropertiesService from "@modules/rural-property-management/services/ruralProperties/findAllRuralPropertiesService";
+import FindRuralPropertyByIdService from "@modules/rural-property-management/services/ruralProperties/FindRuralPropertyByIdService";
+import UpdateRuralPropertyService from "@modules/rural-property-management/services/ruralProperties/UpdateRuralPropertyService";
 import { Request, Response } from "express";
-import { inject, injectable } from 'tsyringe';
-import IRuralPropertiesRepository from '@modules/rural-property-management/repositories/IRuralPropertiesRepository';
-import validateRuralProperty from '@modules/rural-property-management/validations/validateRuralProperty';
+import { container } from "tsyringe";
 
-@injectable()
 class RuralPropertiesController {
-  constructor(
-    @inject('RuralPropertiesRepository')
-    private repository: IRuralPropertiesRepository
-  ) { }
-
   async index(req: Request, res: Response) {
-    const result = await this.repository.findAll();
-    return res.json(result);
+    const findAll = container.resolve(FindAllRuralPropertiesService);
+    const ruralProperties = await findAll.execute();
+
+    return res.json(ruralProperties);
   }
 
   async show(req: Request, res: Response) {
     const { id } = req.params;
-    const result = await this.repository.findByIdOrFail(id);
-    return res.json(result);
+
+    const findById = container.resolve(FindRuralPropertyByIdService);
+    const ruralProperty = await findById.execute(id);
+
+    return res.json(ruralProperty);
   }
 
   async create(req: Request, res: Response) {
     const { name, description } = req.body;
-    const ruralProperty = new RuralProperty();
-    Object.assign(ruralProperty, { name, description });
-    await validateRuralProperty(ruralProperty);
-    const result = await this.repository.save(ruralProperty);
-    res.location(`http://localhost:3333/rural-properties/${result.id}`);
+
+    const createRuralProperty = container.resolve(CreateRuralPropertyService);
+    const ruralProperty = await createRuralProperty.execute({ name, description });
+
+    res.location(`${process.env.API_URL}/ruralProperties/${ruralProperty.id}`);
     return res.status(201).send();
   }
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const ruralProperty = await this.repository.findByIdOrFail(id);
     const { name, description } = req.body;
-    Object.assign(ruralProperty, { name, description });
-    await this.repository.save(ruralProperty);
+
+    const updateRuralProperty = container.resolve(UpdateRuralPropertyService);
+    await updateRuralProperty.execute({ id, name, description});
+
     return res.status(204).send();
   }
 
   async delete(req: Request, res: Response) {
     const { id } = req.params;
-    await this.repository.findByIdOrFail(id);
-    await this.repository.delete(id);
+
+    const deleteRuralProperty = container.resolve(DeleteRuralPropertyService);
+    await deleteRuralProperty.execute(id);
+
     return res.status(204).send();
   }
 }

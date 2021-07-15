@@ -5,19 +5,13 @@ import Cultivation from '@modules/rural-property-management/infra/typeorm/entiti
 @Entity('fields')
 class Field {
   @PrimaryGeneratedColumn('uuid')
-  id?: string;
+  id: string;
 
   @Column()
   name: string;
 
   @Column({ name: 'closed_at' })
   closedAt: Date;
-  
-  @Column({ name: 'rural_property_id', select: false })
-  ruralPropertyId: string;
-
-  @Column({ name: 'cultivation_id', select: false })
-  cultivationId: string;
 
   @ManyToOne(type => RuralProperty)
   @JoinColumn({ name: 'rural_property_id' })

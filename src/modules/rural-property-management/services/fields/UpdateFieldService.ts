@@ -4,6 +4,13 @@ import IRuralPropertiesRepository from '@modules/rural-property-management/repos
 import { inject, injectable } from 'tsyringe';
 import ICultivationsRepository from '@modules/rural-property-management/repositories/ICultivationsRepository';
 
+interface IUpdateFieldService {
+  id: string;
+  name: string;
+  ruralPropertyId: string;
+  cultivationId: string;
+}
+
 @injectable()
 class UpdateFieldService {
   constructor(
@@ -17,10 +24,14 @@ class UpdateFieldService {
     private cultivationsRepository: ICultivationsRepository
   ) { }
 
-  async execute(field: Field): Promise<Field> {
-    await this.ruralPropertiesRepository.findByIdOrFail(field.ruralPropertyId);
-    await this.cultivationsRepository.findByIdOrFail(field.cultivationId);
-    return await this.fieldsRepository.save(field);
+  async execute(data: IUpdateFieldService): Promise<Field> {
+    const obj = await this.fieldsRepository.findByIdOrFail(data.id);
+
+    obj.name = data.name;
+    obj.ruralProperty = await this.ruralPropertiesRepository.findByIdOrFail(data.ruralPropertyId);
+    obj.cultivation = await this.cultivationsRepository.findByIdOrFail(data.cultivationId);
+
+    return await this.fieldsRepository.save(obj);
   }
 }
 

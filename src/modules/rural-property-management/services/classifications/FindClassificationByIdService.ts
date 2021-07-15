@@ -1,12 +1,12 @@
 import Classification from "@modules/rural-property-management/infra/typeorm/entities/Classification";
-import ClassificationsRepository from "@modules/rural-property-management/infra/typeorm/repositories/ClassificationsRepository";
+import IClassificationsRepository from "@modules/rural-property-management/repositories/IClassificationsRepository";
 import { inject, injectable } from "tsyringe";
 
 @injectable()
 class FindClassificationByIdService {
   constructor(
     @inject('ClassificationsRepository')
-    private classificationsRepository: ClassificationsRepository
+    private classificationsRepository: IClassificationsRepository
   ) {}
 
   async execute(id: string): Promise<Classification> {

@@ -1,11 +1,11 @@
-import ClassificationsRepository from "@modules/rural-property-management/infra/typeorm/repositories/ClassificationsRepository";
+import IClassificationsRepository from "@modules/rural-property-management/repositories/IClassificationsRepository";
 import { inject, injectable } from "tsyringe";
   
 @injectable()
 class DeleteClassificationService {
   constructor(
     @inject('ClassificationsRepository')
-      private classificationsRepository: ClassificationsRepository
+      private classificationsRepository: IClassificationsRepository
   ) {}
 
   async execute(id: string): Promise<void> {
