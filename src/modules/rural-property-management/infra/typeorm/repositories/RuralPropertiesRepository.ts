@@ -17,22 +17,17 @@ class RuralPropertiesRepository implements IRuralPropertiesRepository {
   }
 
   async findById(id: string): Promise<RuralProperty | undefined> {
-    try {
-      return await this.repository.findOne(id);
-    } catch (err) {
-      console.log(err);
-      throw new AppError(400, 'Bad Request!');
-    }
+    return await this.repository.findOne(id);
   }
 
   async findByIdOrFail(id: string): Promise<RuralProperty> {
-    try {
-      const result = await this.repository.findOne(id);
-      if (!result) throw new AppError(404, 'Rural Property not found!');
-      return result;
-    } catch (err) {
-      throw new AppError(400, 'Bad Request');
-    }
+    const result = await this.repository.findOne(id);
+    if (!result) throw new AppError(404, 'Rural Property not found!');
+    return result;
+  }
+
+  async findByName(name: string): Promise<RuralProperty | undefined> {
+    return await this.repository.findOne({ name });
   }
 
   async save(data: RuralProperty): Promise<RuralProperty> {

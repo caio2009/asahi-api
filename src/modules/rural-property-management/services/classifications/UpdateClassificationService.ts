@@ -17,15 +17,14 @@ class UpdateClassificationService {
   ) { }
 
   async execute(data: IUpdateClassificationData): Promise<Classification> {
-    const { id, name } = data;
+    const finded = await this.classificationsRepository.findByName(data.name);
+    if(finded && finded.id !== data.id) throw new AppError(409, 'Classification with this name already exists!');
 
-    await this.classificationsRepository.findByIdOrFail(id);
+    const obj = await this.classificationsRepository.findByIdOrFail(data.id);
+    obj.name = data.name;
 
-    const finded = await this.classificationsRepository.findByName(name);
-    if(finded && finded.id !== id) throw new AppError(409, 'Classification with this name already exists!');
-
-    await validateClassification(data);
-    return await this.classificationsRepository.save(data);
+    await validateClassification(obj);
+    return await this.classificationsRepository.save(obj);
   }
 }
 

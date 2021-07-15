@@ -37,25 +37,15 @@ class HarvestsRepository implements IHarvestsRepository {
   }
 
   async findById(id: string): Promise<Harvest | undefined> {
-    try {
-      return await this.repository.findOne(id);
-    } catch (err) {
-      console.log(err);
-      throw new AppError(400, 'Bad Request!');
-    }
+    return await this.repository.findOne(id);
   }
 
   async findByIdOrFail(id: string): Promise<Harvest> {
-    try {
-      const result = await this.repository.findOne(id, {
-        relations: ['ruralProperty', 'field', 'cultivation', 'classification', 'unit']
-      });
-      if (!result) throw new AppError(404, 'Harvest not found!');
-      return result;
-    } catch (err) {
-      console.log(err);
-      throw new AppError(400, 'Bad Request!');
-    }
+    const result = await this.repository.findOne(id, {
+      relations: ['ruralProperty', 'field', 'cultivation', 'classification', 'unit']
+    });
+    if (!result) throw new AppError(404, 'Harvest not found!');
+    return result;
   }
 
   async findByField(fieldId: string): Promise<IHarvestMappedByDateDTO[]> {

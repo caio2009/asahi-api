@@ -1,54 +1,54 @@
-import Harvest from '@modules/rural-property-management/infra/typeorm/entities/Harvest';
+import CreateHarvestService from "@modules/rural-property-management/services/harvests/CreateHarvestService";
+import DeleteHarvestService from "@modules/rural-property-management/services/harvests/DeleteHarvestService";
+import FindAllHarvestsService from "@modules/rural-property-management/services/harvests/FindAllHarverstsService";
+import FindHarvestByIdService from "@modules/rural-property-management/services/harvests/FindHarverstByIdService";
+import UpdateHarvestService from "@modules/rural-property-management/services/harvests/UpdateHarvestService";
 import { Request, Response } from "express";
-import { container, inject, injectable } from 'tsyringe';
-import IHarvestsRepository from '@modules/rural-property-management/repositories/IHarvestsRepository';
-import validateHarvest from '@modules/rural-property-management/validations/validateHarvest';
-import CreateHarvestService from '@modules/rural-property-management/services/harvest/CreateHarvestService';
-import UpdateHarvestService from '@modules/rural-property-management/services/harvest/UpdateHarvestService';
+import { container } from "tsyringe";
 
-@injectable()
 class HarvestsController {
-  constructor(
-    @inject('HarvestsRepository')
-    private repository: IHarvestsRepository
-  ) { }
-
   async index(req: Request, res: Response) {
-    // const result = await this.repository.findAll();
-    const result = await this.repository.findAllMappedByDate();
-    return res.json(result);
+    const findAll = container.resolve(FindAllHarvestsService);
+    const harvests = await findAll.execute();
+
+    return res.json(harvests);
   }
 
   async show(req: Request, res: Response) {
     const { id } = req.params;
-    const result = await this.repository.findByIdOrFail(id);
-    return res.json(result);
+
+    const findById = container.resolve(FindHarvestByIdService);
+    const harvest = await findById.execute(id);
+
+    return res.json(harvest);
   }
 
   async create(req: Request, res: Response) {
     const { date, quantity, fieldId, classificationId, unitId } = req.body;
-    const harvest = new Harvest();
-    Object.assign(harvest, { date, quantity, fieldId, classificationId, unitId });
-    await validateHarvest(harvest);
+
     const createHarvest = container.resolve(CreateHarvestService);
-    const result = await createHarvest.execute(harvest);
-    res.location(`http://localhost:3333/harvests/${result.id}`);
+    const harvest = await createHarvest.execute({ date, quantity, fieldId, classificationId, unitId });
+
+    res.location(`${process.env.API_URL}/harvests/${harvest.id}`);
     return res.status(201).send();
   }
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const harvest = await this.repository.findByIdOrFail(id);
     const { date, quantity, fieldId, classificationId, unitId } = req.body;
+
     const updateHarvest = container.resolve(UpdateHarvestService);
-    await updateHarvest.execute(harvest, { date, quantity, fieldId, classificationId, unitId });
+    await updateHarvest.execute({ id, date, quantity, fieldId, classificationId, unitId });
+
     return res.status(204).send();
   }
 
   async delete(req: Request, res: Response) {
     const { id } = req.params;
-    await this.repository.findByIdOrFail(id);
-    await this.repository.delete(id);
+
+    const deleteHarvest = container.resolve(DeleteHarvestService);
+    await deleteHarvest.execute(id);
+
     return res.status(204).send();
   }
 }

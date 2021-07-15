@@ -16,13 +16,14 @@ class CreateClassificationService {
   ) { }
 
   async execute(data: ICreateClassificationData): Promise<Classification> {
-    const { name } = data;
-
-    const finded = await this.classificationsRepository.findByName(name);
+    const finded = await this.classificationsRepository.findByName(data.name);
     if (finded) throw new AppError(409, 'Classification with this name already exists!');
 
-    await validateClassification(data);
-    return await this.classificationsRepository.save(data);
+    const obj = new Classification();
+    obj.name = data.name;
+
+    await validateClassification(obj);
+    return await this.classificationsRepository.save(obj);
   }
 }
 

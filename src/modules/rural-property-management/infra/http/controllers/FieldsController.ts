@@ -1,54 +1,54 @@
-import Field from '@modules/rural-property-management/infra/typeorm/entities/Field';
+import CreateFieldService from "@modules/rural-property-management/services/fields/CreateFieldService";
+import DeleteFieldService from "@modules/rural-property-management/services/fields/DeleteFieldService";
+import FindAllFieldsService from "@modules/rural-property-management/services/fields/FindAllFieldsService";
+import FindFieldByIdService from "@modules/rural-property-management/services/fields/FindFieldbyIdService";
+import UpdateFieldService from "@modules/rural-property-management/services/fields/UpdateFieldService";
 import { Request, Response } from "express";
-import { container, inject, injectable } from 'tsyringe';
-import IFieldsRepository from '@modules/rural-property-management/repositories/IFieldsRepository';
-import validateField from '@modules/rural-property-management/validations/validateField';
-import CreateFieldService from '@modules/rural-property-management/services/field/CreateFieldService';
-import UpdateFieldService from '@modules/rural-property-management/services/field/UpdateFieldService';
+import { container } from "tsyringe";
 
-@injectable()
 class FieldsController {
-  constructor(
-    @inject('FieldsRepository')
-    private repository: IFieldsRepository
-  ) { }
-
   async index(req: Request, res: Response) {
-    const result = await this.repository.findAll();
-    return res.json(result);
+    const findAll = container.resolve(FindAllFieldsService);
+    const fields = await findAll.execute();
+
+    return res.json(fields);
   }
 
   async show(req: Request, res: Response) {
     const { id } = req.params;
-    const result = await this.repository.findByIdOrFail(id);
-    return res.json(result);
+
+    const findById = container.resolve(FindFieldByIdService);
+    const field = await findById.execute(id);
+
+    return res.json(field);
   }
 
   async create(req: Request, res: Response) {
     const { name, ruralPropertyId, cultivationId } = req.body;
-    const field = new Field();
-    Object.assign(field, { name, ruralPropertyId, cultivationId });
-    await validateField(field);
+
     const createField = container.resolve(CreateFieldService);
-    const result = await createField.execute(field);
-    res.location(`http://localhost:3333/fields/${result.id}`);
+    const field = await createField.execute({ name, ruralPropertyId, cultivationId });
+
+    res.location(`${process.env.API_URL}/fields/${field.id}`);
     return res.status(201).send();
   }
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const field = await this.repository.findByIdOrFail(id);
     const { name, ruralPropertyId, cultivationId } = req.body;
-    Object.assign(field, { name, ruralPropertyId, cultivationId });
+
     const updateField = container.resolve(UpdateFieldService);
-    await updateField.execute(field);
+    await updateField.execute({ id, name, ruralPropertyId, cultivationId });
+
     return res.status(204).send();
   }
 
   async delete(req: Request, res: Response) {
     const { id } = req.params;
-    await this.repository.findByIdOrFail(id);
-    await this.repository.delete(id);
+
+    const deleteField = container.resolve(DeleteFieldService);
+    await deleteField.execute(id);
+
     return res.status(204).send();
   }
 }

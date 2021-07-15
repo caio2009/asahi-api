@@ -8,7 +8,7 @@ import Unit from './Unit';
 @Entity('harvests')
 class Harvest {
   @PrimaryGeneratedColumn('uuid')
-  id?: string;
+  id: string;
 
   @Column()
   date: Date;
@@ -18,21 +18,6 @@ class Harvest {
 
   @Column({ name: 'in_stock' })
   inStock: number;
-
-  @Column({ name: 'rural_property_id', select: false })
-  ruralPropertyId: string;
-
-  @Column({ name: 'field_id', select: false })
-  fieldId: string;
-
-  @Column({ name: 'cultivation_id', select: false })
-  cultivationId: string;
-
-  @Column({ name: 'classification_id', select: false })
-  classificationId: string;
-
-  @Column({ name: 'unit_id', select: false })
-  unitId: string;
 
   @ManyToOne(type => RuralProperty)
   @JoinColumn({ name: 'rural_property_id' })
