@@ -5,8 +5,17 @@ import IFieldsRepository from '@modules/rural-property-management/repositories/I
 import Harvest from '@modules/rural-property-management/infra/typeorm/entities/Harvest';
 import { inject, injectable } from 'tsyringe';
 
+interface IUpdateHarvestData {
+  id: string;
+  date: Date;
+  quantity: number;
+  fieldId: string;
+  classificationId: string;
+  unitId: string;
+}
+
 @injectable()
-class CreateHarvestService {
+class UpdateHarvestService {
   constructor(
     @inject('HarvestsRepository')
     private harvestsRepository: IHarvestsRepository,
@@ -21,19 +30,23 @@ class CreateHarvestService {
     private unitsRepository: IUnitsRepository
   ) { }
 
-  async execute(data: Harvest): Promise<Harvest> {
-    await this.classificationsRepository.findByIdOrFail(data.classificationId);
-    await this.unitsRepository.findByIdOrFail(data.unitId);
+  async execute(data: IUpdateHarvestData): Promise<Harvest> {
+    const obj = await this.harvestsRepository.findByIdOrFail(data.id);
+
+    obj.date = data.date || undefined;
+    obj.quantity = data.quantity;
+    obj.inStock = obj.inStock + (data.quantity - obj.quantity);
+
     const field = await this.fieldsRepository.findByIdOrFail(data.fieldId);
 
-    if (!data.date) data.date = new Date();
+    obj.field = field;
+    obj.ruralProperty = field.ruralProperty;
+    obj.cultivation = field.cultivation;
+    obj.classification = await this.classificationsRepository.findByIdOrFail(data.classificationId);
+    obj.unit = await this.unitsRepository.findByIdOrFail(data.unitId);
 
-    data.ruralPropertyId = field.ruralProperty.id;
-    data.cultivationId = field.cultivation.id;
-    data.inStock = data.quantity;
-
-    return await this.harvestsRepository.save(data);
+    return await this.harvestsRepository.save(obj);
   }
 }
 
-export default CreateHarvestService;
+export default UpdateHarvestService;

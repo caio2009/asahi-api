@@ -26,6 +26,10 @@ class RuralPropertiesRepository implements IRuralPropertiesRepository {
     return result;
   }
 
+  async findByName(name: string): Promise<RuralProperty | undefined> {
+    return await this.repository.findOne({ name });
+  }
+
   async save(data: RuralProperty): Promise<RuralProperty> {
     return await this.repository.save(data);
   }

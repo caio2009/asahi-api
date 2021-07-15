@@ -1,6 +1,6 @@
 import AppError from '@shared/errors/AppError';
 import path from 'path';
-import multer, { StorageEngine } from 'multer';
+import multer from 'multer';
 import crypto from 'crypto';
 
 const uploadsFolder = path.resolve(__dirname, '..', '..', 'uploads');
@@ -30,7 +30,7 @@ export default {
       fileSize: 10 * 1024 * 1024
     },
     fileFilter: (req: any, file: any, cb: any) => {
-      const allowedMimes = ['image/jpeg', '/image/pjpeg', 'image/png'];
+      const allowedMimes = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/jpg'];
 
       if (allowedMimes.includes(file.mimetype)) {
         cb(null, true);

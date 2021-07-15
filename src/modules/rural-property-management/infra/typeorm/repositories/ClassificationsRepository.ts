@@ -26,6 +26,11 @@ class ClassificationsRepository implements IClassificationsRepository {
     return result;
   }
 
+  async findByName(name: string): Promise<Classification | undefined> {
+    const result = await this.repository.findOne({ name });
+    return result;
+  }
+
   async save(data: Classification): Promise<Classification> {
     return await this.repository.save(data);
   }

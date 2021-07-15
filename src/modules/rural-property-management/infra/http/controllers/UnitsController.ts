@@ -1,50 +1,54 @@
-import Unit from '@modules/rural-property-management/infra/typeorm/entities/Unit';
+import CreateUnitService from "@modules/rural-property-management/services/units/CreateUnitService";
+import DeleteUnitService from "@modules/rural-property-management/services/units/DeleteUnitService";
+import FindAllUnitsService from "@modules/rural-property-management/services/units/FindAllUnitsService";
+import FindUnitByIdService from "@modules/rural-property-management/services/units/FindUnitByIdService";
+import UpdateUnitService from "@modules/rural-property-management/services/units/UpdateUnitService";
 import { Request, Response } from "express";
-import { inject, injectable } from 'tsyringe';
-import IUnitsRepository from '@modules/rural-property-management/repositories/IUnitsRepository';
-import validateUnit from '@modules/rural-property-management/validations/validateUnit';
+import { container } from "tsyringe";
 
-@injectable()
 class UnitsController {
-  constructor(
-    @inject('UnitsRepository')
-    private repository: IUnitsRepository
-  ) { }
-
   async index(req: Request, res: Response) {
-    const result = await this.repository.findAll();
-    return res.json(result);
+    const findAll = container.resolve(FindAllUnitsService);
+    const units = await findAll.execute();
+
+    return res.json(units);
   }
 
   async show(req: Request, res: Response) {
     const { id } = req.params;
-    const result = await this.repository.findByIdOrFail(id);
-    return res.json(result);
+
+    const findById = container.resolve(FindUnitByIdService);
+    const unit = await findById.execute(id);
+
+    return res.json(unit);
   }
 
   async create(req: Request, res: Response) {
     const { name, abbreviation } = req.body;
-    const unit = new Unit();
-    Object.assign(unit, { name, abbreviation });
-    await validateUnit(unit);
-    const result = await this.repository.save(unit);
-    res.location(`http://localhost:3333/units/${result.id}`);
+
+    const createUnit = container.resolve(CreateUnitService);
+    const unit = await createUnit.execute({ name, abbreviation });
+
+    res.location(`${process.env.API_URL}/units/${unit.id}`);
     return res.status(201).send();
   }
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const unit = await this.repository.findByIdOrFail(id);
     const { name, abbreviation } = req.body;
-    Object.assign(unit, { name, abbreviation });
-    await this.repository.save(unit);
+
+    const updateUnit = container.resolve(UpdateUnitService);
+    await updateUnit.execute({ id, name, abbreviation });
+
     return res.status(204).send();
   }
 
   async delete(req: Request, res: Response) {
     const { id } = req.params;
-    await this.repository.findByIdOrFail(id);
-    await this.repository.delete(id);
+
+    const deleteUnit = container.resolve(DeleteUnitService);
+    await deleteUnit.execute(id);
+
     return res.status(204).send();
   }
 }

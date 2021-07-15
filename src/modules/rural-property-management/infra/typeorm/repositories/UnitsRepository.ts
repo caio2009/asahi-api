@@ -17,13 +17,21 @@ class UnitsRepository implements IUnitsRepository {
   }
 
   async findById(id: string): Promise<Unit | undefined> {
-    return await this.repository.findOne(id);
+      return await this.repository.findOne(id);
   }
 
   async findByIdOrFail(id: string): Promise<Unit> {
-    const result = await this.repository.findOne(id);
-    if (!result) throw new AppError(404, 'Unit not found!');
-    return result;
+      const result = await this.repository.findOne(id);
+      if (!result) throw new AppError(404, 'Unit not found!');
+      return result;
+  }
+
+  async findByName(name: string): Promise<Unit | undefined> {
+    return await this.repository.findOne({ name });
+  }
+
+  async findByAbbreviation(abbreviation: string): Promise<Unit | undefined> {
+    return await this.repository.findOne({ abbreviation });
   }
 
   async save(data: Unit): Promise<Unit> {
