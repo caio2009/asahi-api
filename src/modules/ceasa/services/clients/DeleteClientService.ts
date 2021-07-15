@@ -1,11 +1,11 @@
-import ClientsRepository from "@modules/ceasa/infra/typeorm/repositories/ClientsRepository";
+import IClientsRepository from "@modules/ceasa/repositories/IClientsRepository";
 import { inject, injectable } from "tsyringe";
 
 @injectable()
 class DeleteClientService {
   constructor (
     @inject('ClientsRepository')
-    private clientsRepository: ClientsRepository
+    private clientsRepository: IClientsRepository
   ) {}
 
   async execute(id: string): Promise<void> {

@@ -1,12 +1,12 @@
 import Client from "@modules/ceasa/infra/typeorm/entities/Client";
-import ClientsRepository from "@modules/ceasa/infra/typeorm/repositories/ClientsRepository";
+import IClientsRepository from "@modules/ceasa/repositories/IClientsRepository";
 import { inject, injectable } from "tsyringe";
 
 @injectable()
 class FindAllClientsService {
   constructor(
     @inject('ClientsRepository')
-    private clientsRepository: ClientsRepository
+    private clientsRepository: IClientsRepository
   ) {}
 
   async execute(): Promise<Client[]> {

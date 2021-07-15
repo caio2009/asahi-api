@@ -1,9 +1,10 @@
 import Sale from "@modules/ceasa/infra/typeorm/entities/Sale";
 import SaleItem from "@modules/ceasa/infra/typeorm/entities/SaleItem";
-import SaleItemsRepository from "@modules/ceasa/infra/typeorm/repositories/SaleItemsRepository";
-import SalesRepository from "@modules/ceasa/infra/typeorm/repositories/SalesRepository";
+import IClientsRepository from "@modules/ceasa/repositories/IClientsRepository";
+import ISaleItemsRepository from "@modules/ceasa/repositories/ISaleItemsRepository";
+import ISalesRepository from "@modules/ceasa/repositories/ISalesRepository";
 import validateSale from "@modules/ceasa/validations/validateSale";
-import HarvestsRepository from "@modules/rural-property-management/infra/typeorm/repositories/HarvestsRepository";
+import IHarvestsRepository from "@modules/rural-property-management/repositories/IHarvestsRepository";
 import { inject, injectable } from "tsyringe";
 
 interface IUpdateSaleData {
@@ -26,56 +27,59 @@ interface IUpdateSaleData {
 class UpdateSaleService {
   constructor(
     @inject('SalesRepository')
-    private salesRepository: SalesRepository,
+    private salesRepository: ISalesRepository,
 
     @inject('SaleItemsRepository')
-    private saleItemsRepository: SaleItemsRepository,
+    private saleItemsRepository: ISaleItemsRepository,
 
     @inject('HarvestsRepository')
-    private harvestsRepository: HarvestsRepository
+    private harvestsRepository: IHarvestsRepository,
+
+    @inject('ClientsRepository')
+    private clientsRepository: IClientsRepository
   ) {}
 
   async execute(data: IUpdateSaleData): Promise<Sale> {
-    const { id } = data;
-    
-    const findedSale = await this.salesRepository.findByIdOrFail(id);
-    const oldSaleItems = [ ...findedSale.saleItems ];
-    const newSaleItems = [ ...data.saleItems ];
-    
-    if (data.date === null) data.date = undefined;
-    Object.assign(findedSale, data);
-    delete findedSale.saleItems;
-    delete findedSale.client;
+    const sale = await this.salesRepository.findByIdOrFail(data.id);
+    sale.date = data.date || undefined;
+    sale.totalValue = data.totalValue;
+    sale.paymentStatus = data.paymentStatus;
+    sale.deliveryStatus = data.deliveryStatus;
+    sale.clientName = data.clientName;
+
+    if (data.clientId) sale.client = await this.clientsRepository.findByIdOrFail(data.clientId);
     
     // Save sale
-    await validateSale(data as Sale);
-    const savedSale = await this.salesRepository.save(findedSale);
+    await validateSale(sale);
+    const savedSale = await this.salesRepository.save(sale);
 
     // Remove sale items
-    const saleItemsToRemove = oldSaleItems.filter(
-      saleItem => !this.getIdsOf(newSaleItems).includes(saleItem.id)
+    const saleItemsToRemove = sale.saleItems.filter(
+      saleItem => !this.getIdsOf(data.saleItems).includes(saleItem.id)
     );
 
-    for (const saleItem of saleItemsToRemove) {
-      await this.saleItemsRepository.delete(saleItem.id);
+    for (const item of saleItemsToRemove) {
+      await this.saleItemsRepository.delete(item.id);
 
-      const findedHarvest = await this.harvestsRepository.findByIdOrFail(saleItem.harvestId);
-      findedHarvest.inStock += saleItem.quantity;
+      const findedHarvest = await this.harvestsRepository.findByIdOrFail(item.harvest.id);
+      findedHarvest.inStock += item.quantity;
       await this.harvestsRepository.save(findedHarvest);
     }
 
     // Update and create sale items
-    for (const saleItem of newSaleItems) {
-      const data = new SaleItem();
-      Object.assign(data, saleItem);
+    for (const item of data.saleItems) {
+      const obj = new SaleItem();
+      obj.quantity = item.quantity;
+      obj.unitPrice = item.unitPrice;
+      obj.sale = savedSale;
 
-      if (!data.id) data.saleId = savedSale.id;
+      if (!obj.id) obj.sale = savedSale;
 
-      await this.saleItemsRepository.save(data);
+      await this.saleItemsRepository.save(obj);
 
-      const findedHarvest = await this.harvestsRepository.findByIdOrFail(saleItem.harvestId);
-      const oldQuantity = this.getFromArray(oldSaleItems, saleItem.id)?.quantity;
-      findedHarvest.inStock += (oldQuantity || 0) - saleItem.quantity;
+      const findedHarvest = await this.harvestsRepository.findByIdOrFail(item.harvestId);
+      const oldQuantity = this.getFromArray(sale.saleItems, item.id)?.quantity;
+      findedHarvest.inStock += (oldQuantity || 0) - item.quantity;
       await this.harvestsRepository.save(findedHarvest);
     }
 

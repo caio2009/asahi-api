@@ -25,9 +25,6 @@ class Sale {
   @Column({ name: 'client_name' })
   clientName: string;
 
-  @Column({ name: 'client_id', select: false })
-  clientId: string;
-
   @ManyToOne(type => Client)
   @JoinColumn({ name: 'client_id' })
   client: Client;

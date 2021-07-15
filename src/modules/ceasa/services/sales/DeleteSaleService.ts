@@ -17,17 +17,17 @@ class DeleteSaleService {
   ) {}
 
   async execute(id: string): Promise<void> {
-    const findedSale = await this.salesRepository.findByIdOrFail(id);
+    const sale = await this.salesRepository.findByIdOrFail(id);
 
-    for (const saleItem of findedSale.saleItems) {
-      const findedHarvest = await this.harvestsRepository.findByIdOrFail(saleItem.harvest.id);
-      findedHarvest.inStock += saleItem.quantity;
+    for (const item of sale.saleItems) {
+      const findedHarvest = await this.harvestsRepository.findByIdOrFail(item.harvest.id);
+      findedHarvest.inStock += item.quantity;
       await this.harvestsRepository.save(findedHarvest);
 
-      await this.saleItemsRepository.delete(saleItem.id);
+      await this.saleItemsRepository.delete(item.id);
     }
 
-    await this.salesRepository.delete(findedSale.id);
+    await this.salesRepository.delete(sale.id);
   }
 }
 

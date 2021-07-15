@@ -13,12 +13,6 @@ class SaleItem {
   @Column()
   quantity: number;
 
-  @Column({ name: 'harvest_id', select: false })
-  harvestId: string;
-
-  @Column({ name: 'sale_id', select: false })
-  saleId: string;
-
   @ManyToOne(type => Harvest)
   @JoinColumn({ name: 'harvest_id' })
   harvest: Harvest;

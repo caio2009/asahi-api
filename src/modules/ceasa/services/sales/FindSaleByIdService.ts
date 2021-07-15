@@ -1,12 +1,12 @@
 import Sale from "@modules/ceasa/infra/typeorm/entities/Sale";
-import SalesRepository from "@modules/ceasa/infra/typeorm/repositories/SalesRepository";
+import ISalesRepository from "@modules/ceasa/repositories/ISalesRepository";
 import { inject, injectable } from "tsyringe";
 
 @injectable()
 class FindSaleByIdService {
   constructor(
     @inject('SalesRepository')
-    private salesRepository: SalesRepository
+    private salesRepository: ISalesRepository
   ) {}
 
   async execute(id: string): Promise<Sale> {

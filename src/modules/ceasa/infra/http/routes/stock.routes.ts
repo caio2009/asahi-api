@@ -7,6 +7,7 @@ function StockRouter() {
   const router = Router();
 
   router.get('/', controller.index.bind(controller));
+  router.get('/details', controller.show.bind(controller));
 
   return router;
 }

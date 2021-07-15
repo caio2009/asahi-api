@@ -1,5 +1,5 @@
 import Client from "@modules/ceasa/infra/typeorm/entities/Client";
-import ClientsRepository from "@modules/ceasa/infra/typeorm/repositories/ClientsRepository";
+import IClientsRepository from "@modules/ceasa/repositories/IClientsRepository";
 import validateClient from "@modules/ceasa/validations/validateClient";
 import AppError from "@shared/errors/AppError";
 import { inject, injectable } from "tsyringe";
@@ -13,19 +13,18 @@ interface IUpdateClientData {
 class UpdateClientService {
   constructor(
     @inject('ClientsRepository')
-    private clientsRepository: ClientsRepository
+    private clientsRepository: IClientsRepository
   ) {}
 
   async execute(data: IUpdateClientData): Promise<Client> {
-    const { id, name } = data;
+    const finded = await this.clientsRepository.findByName(data.name);
+    if (finded && finded.id !== data.id) throw new AppError(409, 'Client with this name already exists!');
+    
+    const obj = await this.clientsRepository.findByIdOrFail(data.id);
+    obj.name = data.name;
 
-    await this.clientsRepository.findByIdOrFail(id);
-
-    const finded = await this.clientsRepository.findByName(name);
-    if (finded && finded.id !== id) throw new AppError(409, 'Client with this name already exists!');
-
-    await validateClient(data);
-    return await this.clientsRepository.save(data);
+    await validateClient(obj);
+    return await this.clientsRepository.save(obj);
   }
 }
 
