@@ -1,11 +1,11 @@
-import IHarvestMappedByDateDTO from "@modules/rural-property-management/dtos/IHarvestMappedByDateDTO";
+import IHarvestMappedByDateDTO from "@modules/rural-property-management/dtos/IHarvestsMappedByDateDTO";
 import IHarvestsRepository from "@modules/rural-property-management/repositories/IHarvestsRepository";
 import { inject, injectable } from "tsyringe";
 
 @injectable()
 class FindAllHarvestsService {
   constructor(
-    @inject('HarverstsRepository')
+    @inject('HarvestsRepository')
     private harvestsRepository: IHarvestsRepository
   ) {}
 

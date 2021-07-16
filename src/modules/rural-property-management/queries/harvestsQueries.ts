@@ -43,23 +43,23 @@ JSON_AGG(json_build_object(
 	'inStock', harvest.in_stock,
   	'ruralProperty', json_build_object(
     	'id', rural_property.id,
-      	'name', rural_property.name
+     	'name', rural_property.name
     ),
   	'field', json_build_object(
    		'id', field.id,
-      	'name', field.name
+     	'name', field.name
     ),
   	'cultivation', json_build_object(
     	'id', cultivation.id,
-      	'name', cultivation.name
+     	'name', cultivation.name
     ),
   	'classification', json_build_object(
     	'id', classification.id,
-      	'name', classification.name
+     	'name', classification.name
     ),
   	'unit', json_build_object(
     	'id', unit.id,
-      	'abbreviation', unit.abbreviation
+     	'abbreviation', unit.abbreviation
     )
 )) harvests
 FROM harvests harvest
@@ -68,7 +68,8 @@ INNER JOIN fields field ON field.id = harvest.field_id
 INNER JOIN cultivations cultivation ON cultivation.id = harvest.cultivation_id
 INNER JOIN classifications classification ON classification.id = harvest.classification_id
 INNER JOIN units unit ON unit.id = harvest.unit_id
-GROUP BY date;
+GROUP BY date
+ORDER BY date DESC
 `;
 
 export const findByField = `
@@ -80,23 +81,23 @@ JSON_AGG(json_build_object(
 	'inStock', harvest.in_stock,
   	'ruralProperty', json_build_object(
     	'id', rural_property.id,
-      	'name', rural_property.name
+      'name', rural_property.name
     ),
   	'field', json_build_object(
    		'id', field.id,
-      	'name', field.name
+      'name', field.name
     ),
   	'cultivation', json_build_object(
     	'id', cultivation.id,
-      	'name', cultivation.name
+      'name', cultivation.name
     ),
   	'classification', json_build_object(
     	'id', classification.id,
-      	'name', classification.name
+      'name', classification.name
     ),
   	'unit', json_build_object(
     	'id', unit.id,
-      	'abbreviation', unit.abbreviation
+      'abbreviation', unit.abbreviation
     )
 )) harvests
 FROM harvests harvest
@@ -106,5 +107,6 @@ INNER JOIN cultivations cultivation ON cultivation.id = harvest.cultivation_id
 INNER JOIN classifications classification ON classification.id = harvest.classification_id
 INNER JOIN units unit ON unit.id = harvest.unit_id
 WHERE field.id = $1
-GROUP BY date;
+GROUP BY date
+ORDER BY date DESC
 `;

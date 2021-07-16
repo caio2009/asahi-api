@@ -18,6 +18,18 @@ import UnitsRepository from '@modules/rural-property-management/infra/typeorm/re
 import IHarvestsRepository from '@modules/rural-property-management/repositories/IHarvestsRepository';
 import HarvestsRepository from '@modules/rural-property-management/infra/typeorm/repositories/HarvestsRepository';
 
+import IClientsRepository from '@modules/ceasa/repositories/IClientsRepository';
+import ClientsRepository from '@modules/ceasa/infra/typeorm/repositories/ClientsRepository';
+
+import ISalesRepository from '@modules/ceasa/repositories/ISalesRepository';
+import SalesRepository from '@modules/ceasa/infra/typeorm/repositories/SalesRepository';
+
+import ISaleItemsRepository from '@modules/ceasa/repositories/ISaleItemsRepository';
+import SaleItemsRepository from '@modules/ceasa/infra/typeorm/repositories/SaleItemsRepository';
+
+import IStockRepository from '@modules/ceasa/repositories/IStockRepository';
+import StockRepository from '@modules/ceasa/infra/typeorm/repositories/StockRepository';
+
 function repositoriesDI() {
   container.registerSingleton<IRuralPropertiesRepository>(
     'RuralPropertiesRepository', RuralPropertiesRepository
@@ -36,7 +48,19 @@ function repositoriesDI() {
   );
   container.registerSingleton<IHarvestsRepository>(
     'HarvestsRepository', HarvestsRepository
-  )
+  );
+  container.registerSingleton<IClientsRepository>(
+    'ClientsRepository', ClientsRepository
+  );
+  container.registerSingleton<ISalesRepository>(
+    'SalesRepository', SalesRepository
+  );
+  container.registerSingleton<ISaleItemsRepository>(
+    'SaleItemsRepository', SaleItemsRepository
+  );
+  container.registerSingleton<IStockRepository>(
+    'StockRepository', StockRepository
+  );
 }
 
 export default repositoriesDI;
