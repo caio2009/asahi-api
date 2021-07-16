@@ -7,7 +7,6 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 class SalesController {
-
   async index(req: Request, res: Response) {
     const findAll = container.resolve(FindAllSalesService);
     const sales = await findAll.execute();

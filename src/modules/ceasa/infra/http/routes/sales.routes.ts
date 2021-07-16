@@ -1,16 +1,18 @@
 import { Router } from 'express';
-import { container } from 'tsyringe';
+import SalePagesController from '../controllers/SalePagesController';
 import SalesController from '../controllers/SalesController';
 
 function SalesRouter() {
-  const controller = container.resolve(SalesController);
+  const salesController = new SalesController();
+  const salePagesController = new SalePagesController();
   const router = Router();
 
-  router.get('/', controller.index.bind(controller));
-  router.get('/:id', controller.show.bind(controller));
-  router.post('/', controller.create.bind(controller));
-  router.put('/:id', controller.update.bind(controller));
-  router.delete('/:id', controller.delete.bind(controller));
+  router.get('/', salesController.index.bind(salesController));
+  router.get('/pages', salePagesController.index.bind(salePagesController));
+  router.get('/:id', salesController.show.bind(salesController));
+  router.post('/', salesController.create.bind(salesController));
+  router.put('/:id', salesController.update.bind(salesController));
+  router.delete('/:id', salesController.delete.bind(salesController));
 
   return router;
 }

@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import { container } from 'tsyringe';
 import ClientsController from '../controllers/ClientsController';
 
 function ClientsRouter() {
-  const controller = container.resolve(ClientsController);
+  const controller = new ClientsController();
   const router = Router();
 
   router.get('/', controller.index.bind(controller));
