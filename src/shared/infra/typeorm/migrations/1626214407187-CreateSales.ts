@@ -36,7 +36,7 @@ export class CreateSales1626214407187 implements MigrationInterface {
                 {
                     name: 'delivery_status',
                     type: 'enum',
-                    enum: ['completed', 'waiting']
+                    enum: ['dispatched', 'waiting']
                 },
                 {
                     name: 'client_name',

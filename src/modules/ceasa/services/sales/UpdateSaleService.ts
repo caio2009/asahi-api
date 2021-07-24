@@ -12,7 +12,7 @@ export interface IUpdateSaleData {
   date: Date;
   totalValue: number;
   paymentStatus: 'paid' | 'pending';
-  deliveryStatus: 'completed' | 'waiting';
+  deliveryStatus: 'dispatched' | 'waiting';
   clientName: string;
   clientId: string;
   saleItems: Array<{

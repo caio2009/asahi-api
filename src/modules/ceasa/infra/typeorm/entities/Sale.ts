@@ -20,7 +20,7 @@ class Sale {
   paymentStatus: 'paid' | 'pending';
 
   @Column({ name: 'delivery_status' })
-  deliveryStatus: 'completed' | 'waiting';
+  deliveryStatus: 'dispatched' | 'waiting';
 
   @Column({ name: 'client_name' })
   clientName: string;
