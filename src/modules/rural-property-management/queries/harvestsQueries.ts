@@ -99,7 +99,7 @@ JSON_AGG(json_build_object(
     	'id', unit.id,
       'abbreviation', unit.abbreviation
     )
-)) harvests
+) ORDER BY classification.name ASC) harvests
 FROM harvests harvest
 INNER JOIN rural_properties rural_property ON rural_property.id = harvest.rural_property_id
 INNER JOIN fields field ON field.id = harvest.field_id
