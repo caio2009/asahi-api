@@ -4,7 +4,7 @@ interface IStockItemDTO {
   cultivation: {
     id: string;
     name: string;
-    imageUrl: string;
+    image: string;
   };
 
   classification: {

@@ -3,7 +3,7 @@ import IHarvestsRepository from "@modules/rural-property-management/repositories
 import { inject, injectable } from "tsyringe";
 
 @injectable()
-class FindAllHarvestsService {
+class FindAllHarvestsMappedByDateService {
   constructor(
     @inject('HarvestsRepository')
     private harvestsRepository: IHarvestsRepository
@@ -14,4 +14,4 @@ class FindAllHarvestsService {
   }
 }
 
-export default FindAllHarvestsService;
+export default FindAllHarvestsMappedByDateService;

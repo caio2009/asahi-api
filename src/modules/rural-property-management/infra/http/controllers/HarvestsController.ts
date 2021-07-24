@@ -1,6 +1,6 @@
 import CreateHarvestService from "@modules/rural-property-management/services/harvests/CreateHarvestService";
 import DeleteHarvestService from "@modules/rural-property-management/services/harvests/DeleteHarvestService";
-import FindAllHarvestsService from "@modules/rural-property-management/services/harvests/FindAllHarverstsService";
+import FindAllHarvestsMappedByDateService from "@modules/rural-property-management/services/harvests/FindAllHarverstsMappedByDateService";
 import FindHarvestByIdService from "@modules/rural-property-management/services/harvests/FindHarverstByIdService";
 import UpdateHarvestService from "@modules/rural-property-management/services/harvests/UpdateHarvestService";
 import { Request, Response } from "express";
@@ -8,7 +8,7 @@ import { container } from "tsyringe";
 
 class HarvestsController {
   async index(req: Request, res: Response) {
-    const findAll = container.resolve(FindAllHarvestsService);
+    const findAll = container.resolve(FindAllHarvestsMappedByDateService);
     const harvests = await findAll.execute();
 
     return res.json(harvests);

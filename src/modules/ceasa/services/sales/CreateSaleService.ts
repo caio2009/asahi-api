@@ -7,7 +7,7 @@ import validateSale from "@modules/ceasa/validations/validateSale";
 import IHarvestsRepository from "@modules/rural-property-management/repositories/IHarvestsRepository";
 import { inject, injectable } from "tsyringe";
 
-interface ICreateSaleData {
+export interface ICreateSaleData {
   date: Date;
   totalValue: number;
   paymentStatus: 'paid' | 'pending';
@@ -38,16 +38,17 @@ class CreateSaleService {
   ) {}
 
   async execute(data: ICreateSaleData): Promise<Sale> {
+    await validateSale(data);
+    
     const obj = new Sale();
     obj.date = data.date || undefined;
     obj.totalValue = data.totalValue;
-    obj.paymentStatus = data.paymentStatus;
-    obj.deliveryStatus = data.deliveryStatus;
+    obj.paymentStatus = data.paymentStatus || 'pending';
+    obj.deliveryStatus = data.deliveryStatus || 'waiting';
     obj.clientName = data.clientName;
-
+    
     if (data.clientId) obj.client = await this.clientsRepository.findByIdOrFail(data.clientId);
-
-    await validateSale(obj);
+    
     const savedSale = await this.salesRepository.save(obj);
 
     for (const item of data.saleItems) {

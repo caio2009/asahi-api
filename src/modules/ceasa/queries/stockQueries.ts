@@ -21,13 +21,15 @@ FROM (
   SELECT 
     cultivation_id, classification_id, unit_id,
     SUM(in_stock) in_stock
-  FROM havests harvest
+  FROM harvests harvest
+  INNER JOIN cultivations cultivation ON cultivation.id = harvest.cultivation_id
+  INNER JOIN classifications classification ON classification.id = harvest.classification_id
   GROUP BY cultivation_id, classification_id, unit_id
 ) temp_1
 INNER JOIN cultivations cultivation ON cultivation.id = temp_1.cultivation_id
 INNER JOIN classifications classification ON classification.id = temp_1.classification_id
 INNER JOIN units unit ON unit.id = temp_1.unit_id
-ORDER BY cultivation.name
+ORDER BY cultivation.name ASC, classification.name ASC
 `;
 
 const findStockItemDetails = `
@@ -40,7 +42,7 @@ json_build_object(
 json_build_object(
 	'id', classification.id,
   'name', classification.name
-) classicafition,
+) classification,
 json_build_object(
 	'id', unit.id,
   'name', unit.name,
