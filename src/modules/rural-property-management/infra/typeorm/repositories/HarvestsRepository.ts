@@ -29,11 +29,22 @@ class HarvestsRepository implements IHarvestsRepository {
   }
 
   async findWithStock(): Promise<Harvest[]> {
-    return await this.repository.find({
-      where: { inStock: MoreThan(0) },
-      relations: ['ruralProperty', 'field', 'cultivation', 'classification', 'unit'],
-      order: { date: 'DESC' }
-    });
+    // return await this.repository.find({
+    //   where: { inStock: MoreThan(0) },
+    //   relations: ['ruralProperty', 'field', 'cultivation', 'classification', 'unit'],
+    //   order: { cultivation: { name: 'ASC' }, classification: { name: 'ASC' } }
+    // });
+
+    return await this.repository.createQueryBuilder('harvest')
+      .leftJoinAndSelect('harvest.ruralProperty', 'ruralProperty')
+      .leftJoinAndSelect('harvest.field', 'field')
+      .leftJoinAndSelect('harvest.cultivation', 'cultivation')
+      .leftJoinAndSelect('harvest.classification', 'classification')
+      .leftJoinAndSelect('harvest.unit', 'unit')
+      .where('harvest.inStock > 0')
+      .orderBy('cultivation.name', 'ASC')
+      .addOrderBy('classification.name', 'ASC')
+      .getMany();
   }
 
   async findById(id: string): Promise<Harvest | undefined> {
