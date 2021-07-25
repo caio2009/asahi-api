@@ -11,10 +11,10 @@ class FieldStatusController {
   ) { }
 
   async update(req: Request, res: Response) {
-    const { fieldId } = req.params;
+    const { id } = req.params;
     const { status } = req.body;
 
-    const field = await this.repository.findByIdOrFail(fieldId);
+    const field = await this.repository.findByIdOrFail(id);
 
     if (status === 'opened') {
       field.closedAt = null;
