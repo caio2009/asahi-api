@@ -2,6 +2,7 @@ import { Router } from 'express';
 import SalePagesController from '../controllers/SalePagesController';
 import SalesController from '../controllers/SalesController';
 import SalesDeliveryStatusController from '../controllers/SalesDeliveryStatusController';
+import SalesPaymentStatusController from '../controllers/SalesPaymentStatusController';
 import SearchSalesController from '../controllers/SearchSalesController';
 import WaitingSalesController from '../controllers/WaitingSalesController';
 
@@ -11,6 +12,7 @@ function SalesRouter() {
   const searchSalesController = new SearchSalesController();
   const waitingSalesController = new WaitingSalesController();
   const salesDeliveryStatusController = new SalesDeliveryStatusController();
+  const salesPaymentStatusController = new SalesPaymentStatusController();
   const router = Router();
 
   router.get('/', salesController.index.bind(salesController));
@@ -22,6 +24,7 @@ function SalesRouter() {
   router.put('/:id', salesController.update.bind(salesController));
   router.delete('/:id', salesController.delete.bind(salesController));
   router.patch('/:id/delivery-status', salesDeliveryStatusController.update.bind(salesDeliveryStatusController));
+  router.patch('/:id/payment-status', salesPaymentStatusController.update.bind(salesPaymentStatusController));
 
   return router;
 }
