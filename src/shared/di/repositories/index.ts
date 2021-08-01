@@ -30,6 +30,12 @@ import SaleItemsRepository from '@modules/ceasa/infra/typeorm/repositories/SaleI
 import IStockRepository from '@modules/ceasa/repositories/IStockRepository';
 import StockRepository from '@modules/ceasa/infra/typeorm/repositories/StockRepository';
 
+import IUsersRepository from '@modules/session/repositories/IUsersRepository';
+import UsersRepository from '@modules/session/infra/typeorm/repositories/UsersRepository';
+
+import IRefreshTokensRepository from '@modules/session/repositories/IRefreshTokensRepository';
+import RefreshTokensRepository from '@modules/session/infra/typeorm/repositories/RefreshTokensRepository';
+
 function repositoriesDI() {
   container.registerSingleton<IRuralPropertiesRepository>(
     'RuralPropertiesRepository', RuralPropertiesRepository
@@ -60,6 +66,12 @@ function repositoriesDI() {
   );
   container.registerSingleton<IStockRepository>(
     'StockRepository', StockRepository
+  );
+  container.registerSingleton<IUsersRepository>(
+    'UsersRepository', UsersRepository
+  );
+  container.registerSingleton<IRefreshTokensRepository>(
+    'RefreshTokensRepository', RefreshTokensRepository
   );
 }
 

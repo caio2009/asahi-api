@@ -8,19 +8,24 @@ import harvestsRouter from '@modules/rural-property-management/infra/http/routes
 import clientsRouter from '@modules/ceasa/infra/http/routes/clients.routes';
 import salesRouter from '@modules/ceasa/infra/http/routes/sales.routes';
 import stockRouter from '@modules/ceasa/infra/http/routes/stock.routes';
+import usersRouter from '@modules/session/infra/http/routes/users.routes';
+import sessionsRouter from '@modules/session/infra/http/routes/sessions.routes';
+import checkAuthentication from '../middlewares/checkAuthentication';
 
 function appRouter() {
   const router = Router();
 
-  router.use('/rural-properties', ruralPropertiesRouter());
-  router.use('/cultivations', cultivationsRouter());
-  router.use('/fields', fieldsRouter());
-  router.use('/classifications', classificationsRouter());
-  router.use('/units', unitsRouter());
-  router.use('/harvests', harvestsRouter());
-  router.use('/clients', clientsRouter());
-  router.use('/sales', salesRouter());
-  router.use('/stock', stockRouter());
+  router.use('/rural-properties', checkAuthentication, ruralPropertiesRouter());
+  router.use('/cultivations', checkAuthentication, cultivationsRouter());
+  router.use('/fields', checkAuthentication, fieldsRouter());
+  router.use('/classifications', checkAuthentication, classificationsRouter());
+  router.use('/units', checkAuthentication, unitsRouter());
+  router.use('/harvests', checkAuthentication, harvestsRouter());
+  router.use('/clients', checkAuthentication, clientsRouter());
+  router.use('/sales', checkAuthentication, salesRouter());
+  router.use('/stock', checkAuthentication, stockRouter());
+  router.use('/users', checkAuthentication, usersRouter());
+  router.use('/sessions', sessionsRouter());
 
   return router;
 }
