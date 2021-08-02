@@ -66,7 +66,7 @@ class SignInService {
 
     return jwt.sign(payload, secret, {
       subject: user.username,
-      expiresIn: 30
+      expiresIn: 1 * 60 * 60
     });
   }
 
